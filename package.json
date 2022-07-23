@@ -1,0 +1,24 @@
+{
+  "name": "killteammanager",
+  "version": "1.0.0",
+  "description": "Helps Manage KillTeam Games and Campaigns",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "server": "nodemon Server/server"
+  },
+  "author": "Nathan Gilbert",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "config": "^3.3.7",
+    "express": "^4.18.1",
+    "express-validator": "^6.14.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.4.6"
+  },
+  "devDependencies": {
+    "concurrently": "^7.3.0",
+    "nodemon": "^2.0.19"
+  }
+}
