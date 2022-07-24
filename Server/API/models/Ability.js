@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const RuleSchema = new mongoose.Schema({
+const AbilitySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -20,4 +20,4 @@ const RuleSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("rule", RuleSchema);
+module.exports = mongoose.model("ability", AbilitySchema);
