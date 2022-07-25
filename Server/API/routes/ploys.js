@@ -49,4 +49,34 @@ router.post(
   }
 );
 
+// @route   DELETE api/ploys
+// @desc    Delete Ploy
+// @access  Private
+
+router.delete("/", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+
+    const ploy = await Ploy.findById(req.body.id);
+    if (!ploy) {
+      return res.json({ msg: "Could not find Ploy" });
+    } else {
+      validUserDelete = ploy.owner_id.toString() === req.user.id;
+    }
+
+    if (validUserDelete) {
+      let result = await Ploy.findByIdAndDelete(req.body.id);
+      if (!result) {
+        return res.json({ msg: "Error Ploy Not Deleted" });
+      } else {
+        return res.json({ msg: "Ploy Deleted" });
+      }
+    }
+    return res.json({ msg: "Error Ploy Not Deleted: Invalid User" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 module.exports = router;

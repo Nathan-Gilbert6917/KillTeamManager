@@ -95,4 +95,34 @@ router.post(
   }
 );
 
+// @route   DELETE api/operatives
+// @desc    Delete Operative
+// @access  Private
+
+router.delete("/", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+
+    const operative = await Operative.findById(req.body.id);
+    if (!operative) {
+      return res.json({ msg: "Could not find Operative" });
+    } else {
+      validUserDelete = operative.owner_id.toString() === req.user.id;
+    }
+
+    if (validUserDelete) {
+      let result = await Operative.findByIdAndDelete(req.body.id);
+      if (!result) {
+        return res.json({ msg: "Error Operative Not Deleted" });
+      } else {
+        return res.json({ msg: "Operative Deleted" });
+      }
+    }
+    return res.json({ msg: "Error Operative Not Deleted: Invalid User" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 module.exports = router;

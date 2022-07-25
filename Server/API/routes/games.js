@@ -52,4 +52,34 @@ router.post(
   }
 );
 
+// @route   DELETE api/games
+// @desc    Delete Game
+// @access  Private
+
+router.delete("/", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+
+    const game = await Game.findById(req.body.id);
+    if (!game) {
+      return res.json({ msg: "Could not find Game" });
+    } else {
+      validUserDelete = game.owner_id.toString() === req.user.id;
+    }
+
+    if (validUserDelete) {
+      let result = await Game.findByIdAndDelete(req.body.id);
+      if (!result) {
+        return res.json({ msg: "Error Game Not Deleted" });
+      } else {
+        return res.json({ msg: "Game Deleted" });
+      }
+    }
+    return res.json({ msg: "Error Game Not Deleted: Invalid User" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 module.exports = router;

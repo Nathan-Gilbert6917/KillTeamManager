@@ -31,16 +31,16 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const {
+    let {
       name,
       mission_number,
       sequence,
       rules,
       objective,
-      actions,
+      missions,
     } = req.body;
 
-    if (!actions) actions = [];
+    if (!missions) missions = [];
     if (!rules) rules = [];
 
     try {
@@ -51,7 +51,7 @@ router.post(
         sequence,
         rules,
         objective,
-        actions,
+        missions,
         is_user_created: true,
       });
       await mission.save();
@@ -62,5 +62,35 @@ router.post(
     }
   }
 );
+
+// @route   DELETE api/missions
+// @desc    Delete Mission
+// @access  Private
+
+router.delete("/", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+
+    const mission = await Mission.findById(req.body.id);
+    if (!mission) {
+      return res.json({ msg: "Could not find Mission" });
+    } else {
+      validUserDelete = mission.owner_id.toString() === req.user.id;
+    }
+
+    if (validUserDelete) {
+      let result = await Mission.findByIdAndDelete(req.body.id);
+      if (!result) {
+        return res.json({ msg: "Error Mission Not Deleted" });
+      } else {
+        return res.json({ msg: "Mission Deleted" });
+      }
+    }
+    return res.json({ msg: "Error Mission Not Deleted: Invalid User" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
 
 module.exports = router;

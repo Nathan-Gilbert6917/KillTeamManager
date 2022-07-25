@@ -44,4 +44,34 @@ router.post(
   }
 );
 
+// @route   DELETE api/abilities
+// @desc    Delete Ability
+// @access  Private
+
+router.delete("/", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+
+    const ability = await Ability.findById(req.body.id);
+    if (!ability) {
+      return res.json({ msg: "Could not find Ability" });
+    } else {
+      validUserDelete = ability.owner_id.toString() === req.user.id;
+    }
+
+    if (validUserDelete) {
+      let result = await Ability.findByIdAndDelete(req.body.id);
+      if (!result) {
+        return res.json({ msg: "Error Ability Not Deleted" });
+      } else {
+        return res.json({ msg: "Ability Deleted" });
+      }
+    }
+    return res.json({ msg: "Error Ability Not Deleted: Invalid User" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 module.exports = router;

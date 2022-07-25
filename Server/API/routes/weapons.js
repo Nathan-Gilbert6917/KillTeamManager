@@ -76,4 +76,34 @@ router.post(
   }
 );
 
+// @route   DELETE api/weapons
+// @desc    Delete Weapon
+// @access  Private
+
+router.delete("/", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+
+    const weapon = await Weapon.findById(req.body.id);
+    if (!weapon) {
+      return res.json({ msg: "Could not find Weapon" });
+    } else {
+      validUserDelete = weapon.owner_id.toString() === req.user.id;
+    }
+
+    if (validUserDelete) {
+      let result = await Weapon.findByIdAndDelete(req.body.id);
+      if (!result) {
+        return res.json({ msg: "Error Weapon Not Deleted" });
+      } else {
+        return res.json({ msg: "Weapon Deleted" });
+      }
+    }
+    return res.json({ msg: "Error Weapon Not Deleted" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 module.exports = router;

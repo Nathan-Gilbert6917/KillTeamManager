@@ -53,4 +53,34 @@ router.post(
   }
 );
 
+// @route   DELETE api/teams
+// @desc    Delete Team
+// @access  Private
+
+router.delete("/", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+
+    const team = await Team.findById(req.body.id);
+    if (!team) {
+      return res.json({ msg: "Could not find Team" });
+    } else {
+      validUserDelete = team.owner_id.toString() === req.user.id;
+    }
+
+    if (validUserDelete) {
+      let result = await Team.findByIdAndDelete(req.body.id);
+      if (!result) {
+        return res.json({ msg: "Error Team Not Deleted" });
+      } else {
+        return res.json({ msg: "Team Deleted" });
+      }
+    }
+    return res.json({ msg: "Error Team Not Deleted: Invalid User" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 module.exports = router;

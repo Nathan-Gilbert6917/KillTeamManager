@@ -36,4 +36,34 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
+// @route   DELETE api/player_stats
+// @desc    Delete Player Stats
+// @access  Private
+
+router.delete("/", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+
+    const playerStats = await PlayerStats.findById(req.body.id);
+    if (!playerStats) {
+      return res.json({ msg: "Could not find Player Stats" });
+    } else {
+      validUserDelete = playerStats.player_id.toString() === req.user.id;
+    }
+
+    if (validUserDelete) {
+      let result = await PlayerStats.findByIdAndDelete(req.body.id);
+      if (!result) {
+        return res.json({ msg: "Error Player Stats Not Deleted" });
+      } else {
+        return res.json({ msg: "Player Stats Deleted" });
+      }
+    }
+    return res.json({ msg: "Error Player Stats Not Deleted: Invalid User" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 module.exports = router;

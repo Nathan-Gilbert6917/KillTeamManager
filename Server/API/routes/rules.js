@@ -44,4 +44,34 @@ router.post(
   }
 );
 
+// @route   DELETE api/rules
+// @desc    Delete Rule
+// @access  Private
+
+router.delete("/", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+
+    const rule = await Rule.findById(req.body.id);
+    if (!rule) {
+      return res.json({ msg: "Could not find Rule" });
+    } else {
+      validUserDelete = rule.owner_id.toString() === req.user.id;
+    }
+
+    if (validUserDelete) {
+      let result = await Rule.findByIdAndDelete(req.body.id);
+      if (!result) {
+        return res.json({ msg: "Error Rule Not Deleted" });
+      } else {
+        return res.json({ msg: "Rule Deleted" });
+      }
+    }
+    return res.json({ msg: "Error Rule Not Deleted: Invalid User" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 module.exports = router;

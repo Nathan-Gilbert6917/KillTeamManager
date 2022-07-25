@@ -49,4 +49,34 @@ router.post(
   }
 );
 
+// @route   DELETE api/actions
+// @desc    Delete Action
+// @access  Private
+
+router.delete("/", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+
+    const action = await Action.findById(req.body.id);
+    if (!action) {
+      return res.json({ msg: "Could not find Action" });
+    } else {
+      validUserDelete = action.owner_id.toString() === req.user.id;
+    }
+
+    if (validUserDelete) {
+      let result = await Action.findByIdAndDelete(req.body.id);
+      if (!result) {
+        return res.json({ msg: "Error Action Not Deleted" });
+      } else {
+        return res.json({ msg: "Action Deleted" });
+      }
+    }
+    return res.json({ msg: "Error Action Not Deleted: Invalid User" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 module.exports = router;
