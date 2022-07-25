@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const TeamSchema = new mongoose.Schema({
+  owner_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
   name: {
     type: String,
     required: true,

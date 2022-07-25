@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const MissionSchema = new mongoose.Schema({
+  owner_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
   name: {
     type: String,
     required: true,
@@ -31,7 +35,7 @@ const MissionSchema = new mongoose.Schema({
       ref: "Action",
     },
   ],
-  user_created: {
+  is_user_created: {
     type: Boolean,
   },
 });

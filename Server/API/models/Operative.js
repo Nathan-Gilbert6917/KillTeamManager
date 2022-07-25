@@ -11,7 +11,7 @@ const OperativeSchema = new mongoose.Schema({
   },
   team_id: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
+    default: null,
   },
   action_point_limit: {
     type: Number,
@@ -64,17 +64,14 @@ const OperativeSchema = new mongoose.Schema({
   is_incapacitated: {
     type: Boolean,
     default: false,
-    required: true,
   },
   is_slain: {
     type: Boolean,
     default: false,
-    required: true,
   },
   is_clone: {
     type: Boolean,
     default: false,
-    required: true,
   },
 
   actions: [

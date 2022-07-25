@@ -6,6 +6,10 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 const User = require("../models/User");
 
+// @access types:
+// Private Token required
+// Public  Non-token
+
 // @route   POST api/users
 // @desc    Register User
 // @access  Public

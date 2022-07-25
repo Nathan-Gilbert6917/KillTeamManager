@@ -19,6 +19,7 @@ app.use("/api/auth", require("./API/routes/auth"));
 app.use("/api/games", require("./API/routes/games"));
 app.use("/api/teams", require("./API/routes/teams"));
 app.use("/api/operatives", require("./API/routes/operatives"));
+app.use("/api/abilities", require("./API/routes/abilities"));
 app.use("/api/actions", require("./API/routes/actions"));
 app.use("/api/tac_ops_cards", require("./API/routes/tac_ops_cards"));
 app.use("/api/player_stats", require("./API/routes/player_stats"));

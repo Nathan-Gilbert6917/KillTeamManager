@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
-const PlayerStatsSchema = require("./PlayerStats");
 
 const GameSchema = new mongoose.Schema({
+  owner_id: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
   name: {
     type: String,
     trim: true,
@@ -19,15 +21,13 @@ const GameSchema = new mongoose.Schema({
     type: Number,
     min: 1,
     default: 1,
-    required: true,
   },
   phase: {
     type: Number,
     min: 1,
     default: 1,
-    required: true,
   },
-  player_stats: [{ type: PlayerStatsSchema, default: {} }],
+  player_stats: [{ type: mongoose.Schema.Types.ObjectId, ref: "PlayerStats" }],
   gamemode: {
     type: String,
     required: true,
@@ -35,7 +35,6 @@ const GameSchema = new mongoose.Schema({
   is_active: {
     type: Boolean,
     default: false,
-    required: true,
   },
 });
 
