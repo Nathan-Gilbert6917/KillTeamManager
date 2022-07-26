@@ -108,30 +108,26 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// @route   DELETE api/ploys
+// @route   DELETE api/ploys/:id
 // @desc    Delete Ploy
 // @access  Private
 
-router.delete("/", auth, async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   try {
     let validUserDelete = false;
 
-    const ploy = await Ploy.findById(req.body.id);
+    const ploy = await Ploy.findById(req.params.id);
     if (!ploy) {
       return res.json({ msg: "Could not find Ploy" });
     } else {
       validUserDelete = ploy.owner_id.toString() === req.user.id;
     }
 
-    if (validUserDelete) {
-      let result = await Ploy.findByIdAndDelete(req.body.id);
-      if (!result) {
-        return res.json({ msg: "Error Ploy Not Deleted" });
-      } else {
-        return res.json({ msg: "Ploy Deleted" });
-      }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
     }
-    return res.json({ msg: "Error Ploy Not Deleted: Invalid User" });
+    await ploy.remove();
+    return res.json({ msg: "Ploy Deleted" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error: " + error.message);

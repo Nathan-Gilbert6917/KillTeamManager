@@ -108,30 +108,26 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// @route   DELETE api/actions
+// @route   DELETE api/actions/:id
 // @desc    Delete Action
 // @access  Private
 
-router.delete("/", auth, async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   try {
     let validUserDelete = false;
 
-    const action = await Action.findById(req.body.id);
+    const action = await Action.findById(req.params.id);
     if (!action) {
       return res.json({ msg: "Could not find Action" });
     } else {
       validUserDelete = action.owner_id.toString() === req.user.id;
     }
 
-    if (validUserDelete) {
-      let result = await Action.findByIdAndDelete(req.body.id);
-      if (!result) {
-        return res.json({ msg: "Error Action Not Deleted" });
-      } else {
-        return res.json({ msg: "Action Deleted" });
-      }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
     }
-    return res.json({ msg: "Error Action Not Deleted: Invalid User" });
+    await action.remove();
+    return res.json({ msg: "Action Deleted" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error: " + error.message);

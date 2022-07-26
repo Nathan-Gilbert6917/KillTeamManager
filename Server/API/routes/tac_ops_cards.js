@@ -105,30 +105,26 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// @route   DELETE api/tac_ops_cards
+// @route   DELETE api/tac_ops_cards/:id
 // @desc    Delete Tac_ops_card
 // @access  Private
 
-router.delete("/", auth, async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   try {
     let validUserDelete = false;
 
-    const tacOpsCard = await TacOpsCard.findById(req.body.id);
+    const tacOpsCard = await TacOpsCard.findById(req.params.id);
     if (!tacOpsCard) {
-      return res.json({ msg: "Could not find Tac-Ops Card" });
+      return res.json({ msg: "Could not find TacOpsCard" });
     } else {
       validUserDelete = tacOpsCard.owner_id.toString() === req.user.id;
     }
 
-    if (validUserDelete) {
-      let result = await TacOpsCard.findByIdAndDelete(req.body.id);
-      if (!result) {
-        return res.json({ msg: "Error Tac-Ops Card Not Deleted" });
-      } else {
-        return res.json({ msg: "Tac-Ops Card Deleted" });
-      }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
     }
-    return res.json({ msg: "Error Tac-Ops Card Not Deleted: Invalid User" });
+    await tacOpsCard.remove();
+    return res.json({ msg: "TacOpsCard Deleted" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error: " + error.message);

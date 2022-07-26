@@ -122,30 +122,26 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// @route   DELETE api/missions
+// @route   DELETE api/missions/:id
 // @desc    Delete Mission
 // @access  Private
 
-router.delete("/", auth, async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   try {
     let validUserDelete = false;
 
-    const mission = await Mission.findById(req.body.id);
+    const mission = await Mission.findById(req.params.id);
     if (!mission) {
       return res.json({ msg: "Could not find Mission" });
     } else {
       validUserDelete = mission.owner_id.toString() === req.user.id;
     }
 
-    if (validUserDelete) {
-      let result = await Mission.findByIdAndDelete(req.body.id);
-      if (!result) {
-        return res.json({ msg: "Error Mission Not Deleted" });
-      } else {
-        return res.json({ msg: "Mission Deleted" });
-      }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
     }
-    return res.json({ msg: "Error Mission Not Deleted: Invalid User" });
+    await mission.remove();
+    return res.json({ msg: "Mission Deleted" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error: " + error.message);

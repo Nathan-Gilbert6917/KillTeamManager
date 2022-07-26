@@ -97,4 +97,30 @@ router.get("/:id", auth, async (req, res) => {
   }
 });
 
+// @route   DELETE api/users/:id
+// @desc    Delete User
+// @access  Private
+
+router.delete("/:id", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.json({ msg: "Could not find User" });
+    } else {
+      validUserDelete = user.id.toString() === req.user.id;
+    }
+
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+    await user.remove();
+    return res.json({ msg: "User Deleted" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 module.exports = router;

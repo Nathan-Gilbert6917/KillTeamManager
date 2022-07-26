@@ -99,30 +99,26 @@ router.get("/game/:id", auth, async (req, res) => {
   }
 });
 
-// @route   DELETE api/player_stats
-// @desc    Delete Player Stats
+// @route   DELETE api/playerstats/:id
+// @desc    Delete PlayerStats
 // @access  Private
 
-router.delete("/", auth, async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   try {
     let validUserDelete = false;
 
-    const playerStats = await PlayerStats.findById(req.body.id);
-    if (!playerStats) {
-      return res.json({ msg: "Could not find Player Stats" });
+    const playerstats = await PlayerStats.findById(req.params.id);
+    if (!playerstats) {
+      return res.json({ msg: "Could not find PlayerStats " });
     } else {
-      validUserDelete = playerStats.player_id.toString() === req.user.id;
+      validUserDelete = playerstats.owner_id.toString() === req.user.id;
     }
 
-    if (validUserDelete) {
-      let result = await PlayerStats.findByIdAndDelete(req.body.id);
-      if (!result) {
-        return res.json({ msg: "Error Player Stats Not Deleted" });
-      } else {
-        return res.json({ msg: "Player Stats Deleted" });
-      }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
     }
-    return res.json({ msg: "Error Player Stats Not Deleted: Invalid User" });
+    await playerstats.remove();
+    return res.json({ msg: "PlayerStats  Deleted" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error: " + error.message);

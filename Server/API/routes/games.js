@@ -16,7 +16,7 @@ router.post(
   auth,
   [
     check("name", "Name must be provided").not().isEmpty(),
-    check("mission", "Please enter a Mission").not().isEmpty().isMongoId(),
+    check("game", "Please enter a Game").not().isEmpty().isMongoId(),
     check("gamemode", "Please enter a Gamemode").not().isEmpty(),
   ],
   async (req, res) => {
@@ -25,7 +25,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    let { name, mission, player_stats, gamemode } = req.body;
+    let { name, game, player_stats, gamemode } = req.body;
 
     if (!player_stats) player_stats = [];
 
@@ -38,7 +38,7 @@ router.post(
       const game = new Game({
         owner_id: req.user.id,
         name,
-        mission,
+        game,
         code,
         player_stats,
         gamemode,
@@ -73,30 +73,26 @@ router.get("/:id", auth, async (req, res) => {
   }
 });
 
-// @route   DELETE api/games
+// @route   DELETE api/games/:id
 // @desc    Delete Game
 // @access  Private
 
-router.delete("/", auth, async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   try {
     let validUserDelete = false;
 
-    const game = await Game.findById(req.body.id);
+    const game = await Game.findById(req.params.id);
     if (!game) {
       return res.json({ msg: "Could not find Game" });
     } else {
       validUserDelete = game.owner_id.toString() === req.user.id;
     }
 
-    if (validUserDelete) {
-      let result = await Game.findByIdAndDelete(req.body.id);
-      if (!result) {
-        return res.json({ msg: "Error Game Not Deleted" });
-      } else {
-        return res.json({ msg: "Game Deleted" });
-      }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
     }
-    return res.json({ msg: "Error Game Not Deleted: Invalid User" });
+    await game.remove();
+    return res.json({ msg: "Game Deleted" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error: " + error.message);

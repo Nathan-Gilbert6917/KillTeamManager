@@ -104,30 +104,26 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// @route   DELETE api/abilities
+// @route   DELETE api/abilities/:id
 // @desc    Delete Ability
 // @access  Private
 
-router.delete("/", auth, async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   try {
     let validUserDelete = false;
 
-    const ability = await Ability.findById(req.body.id);
+    const ability = await Ability.findById(req.params.id);
     if (!ability) {
-      return res.status(404).json({ msg: "No Ability found" });
+      return res.json({ msg: "Could not find Ability" });
     } else {
       validUserDelete = ability.owner_id.toString() === req.user.id;
     }
 
-    if (validUserDelete) {
-      let result = await Ability.findByIdAndDelete(req.body.id);
-      if (!result) {
-        return res.json({ msg: "Error Ability Not Deleted" });
-      } else {
-        return res.json({ msg: "Ability Deleted" });
-      }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
     }
-    return res.json({ msg: "Error Ability Not Deleted: Invalid User" });
+    await ability.remove();
+    return res.json({ msg: "Ability Deleted" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error: " + error.message);

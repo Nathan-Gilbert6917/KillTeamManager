@@ -152,30 +152,26 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// @route   DELETE api/operatives
+// @route   DELETE api/operatives/:id
 // @desc    Delete Operative
 // @access  Private
 
-router.delete("/", auth, async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   try {
     let validUserDelete = false;
 
-    const operative = await Operative.findById(req.body.id);
+    const operative = await Operative.findById(req.params.id);
     if (!operative) {
       return res.json({ msg: "Could not find Operative" });
     } else {
       validUserDelete = operative.owner_id.toString() === req.user.id;
     }
 
-    if (validUserDelete) {
-      let result = await Operative.findByIdAndDelete(req.body.id);
-      if (!result) {
-        return res.json({ msg: "Error Operative Not Deleted" });
-      } else {
-        return res.json({ msg: "Operative Deleted" });
-      }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
     }
-    return res.json({ msg: "Error Operative Not Deleted: Invalid User" });
+    await operative.remove();
+    return res.json({ msg: "Operative Deleted" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error: " + error.message);

@@ -135,8 +135,8 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// @route   DELETE api/weapons
-// @desc    Delete Weapon
+// @route   UPDATE api/weapons/:id
+// @desc    Update Weapon
 // @access  Private
 
 router.delete("/", auth, async (req, res) => {
@@ -159,6 +159,32 @@ router.delete("/", auth, async (req, res) => {
       }
     }
     return res.json({ msg: "Error Weapon Not Deleted" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
+// @route   DELETE api/weapons/:id
+// @desc    Delete Weapon
+// @access  Private
+
+router.delete("/:id", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+
+    const weapon = await Weapon.findById(req.params.id);
+    if (!weapon) {
+      return res.json({ msg: "Could not find Weapon " });
+    } else {
+      validUserDelete = weapon.owner_id.toString() === req.user.id;
+    }
+
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+    await weapon.remove();
+    return res.json({ msg: "Weapon  Deleted" });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error: " + error.message);
