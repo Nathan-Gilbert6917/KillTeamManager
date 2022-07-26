@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../../middleware/auth");
 const { check, validationResult } = require("express-validator");
+const checkObjectId = require("../../middleware/checkObjectId");
 const Mission = require("../models/Mission");
 
 // @access types:
@@ -66,7 +67,7 @@ router.post(
 // @route   GET api/missions/:id
 // @desc    Get Mission by ID
 // @access  Private
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     const mission = await Mission.findById(req.params.id);
 
@@ -126,7 +127,7 @@ router.get("/", auth, async (req, res) => {
 // @desc    Update Mission
 // @access  Private
 
-router.put("/update/:id", auth, async (req, res) => {
+router.put("/update/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
     const mission = await Mission.findById(req.params.id);
@@ -156,7 +157,7 @@ router.put("/update/:id", auth, async (req, res) => {
 // @desc    Delete Mission
 // @access  Private
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
 

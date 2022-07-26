@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const auth = require("../../middleware/auth");
 const config = require("config");
 const User = require("../models/User");
+const checkObjectId = require("../../middleware/checkObjectId");
 
 // @access types:
 // Private Token required
@@ -79,7 +80,7 @@ router.post(
 // @route   GET api/users/:id
 // @desc    Get Users by ID
 // @access  Private
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select("-password");
 
@@ -101,7 +102,7 @@ router.get("/:id", auth, async (req, res) => {
 // @desc    Update User
 // @access  Private
 
-router.put("/update/:id", auth, async (req, res) => {
+router.put("/update/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
     const user = await User.findById(req.params.id);
@@ -140,7 +141,7 @@ router.put("/update/:id", auth, async (req, res) => {
 // @desc    Delete User
 // @access  Private
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
 

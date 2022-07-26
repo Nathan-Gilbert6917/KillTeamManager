@@ -3,6 +3,7 @@ const router = express.Router();
 const { check, validationResult } = require("express-validator");
 const auth = require("../../middleware/auth");
 const TacOpsCard = require("../models/TacOpsCard");
+const checkObjectId = require("../../middleware/checkObjectId");
 
 // @access types:
 // Private Token required
@@ -46,10 +47,10 @@ router.post(
   }
 );
 
-// @route   GET api/tacopscards/:id
+// @route   GET api/tac_ops_cards/:id
 // @desc    Get TacOpsCard by ID
 // @access  Private
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     const tacopscard = await TacOpsCard.findById(req.params.id);
 
@@ -67,7 +68,7 @@ router.get("/:id", auth, async (req, res) => {
   }
 });
 
-// @route   GET api/tacopscards
+// @route   GET api/tac_ops_cards
 // @desc    Get all TacOpsCard w/ filters
 // @access  Private
 router.get("/", auth, async (req, res) => {
@@ -105,11 +106,11 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// @route   UPDATE api/tacopscards/update/:id
+// @route   UPDATE api/tac_ops_cards/update/:id
 // @desc    Update TacOpsCard
 // @access  Private
 
-router.put("/update/:id", auth, async (req, res) => {
+router.put("/update/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
     const tacOpsCard = await TacOpsCard.findById(req.params.id);
@@ -139,7 +140,7 @@ router.put("/update/:id", auth, async (req, res) => {
 // @desc    Delete Tac_ops_card
 // @access  Private
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
 

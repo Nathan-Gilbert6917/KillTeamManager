@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require("../../middleware/auth");
 const { check, validationResult } = require("express-validator");
 const Game = require("../models/Game");
+const checkObjectId = require("../../middleware/checkObjectId");
 const { generateGameCode } = require("../../middleware/gameCodeGenerator");
 // @access types:
 // Private Token required
@@ -55,7 +56,7 @@ router.post(
 // @route   GET api/games/:id
 // @desc    Get Game by ID
 // @access  Private
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     const game = await Game.findById(req.params.id);
 
@@ -77,7 +78,7 @@ router.get("/:id", auth, async (req, res) => {
 // @desc    Update Game
 // @access  Private
 
-router.put("/update/:id", auth, async (req, res) => {
+router.put("/update/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
     const game = await Game.findById(req.params.id);
@@ -90,11 +91,18 @@ router.put("/update/:id", auth, async (req, res) => {
       return res.status(401).json({ msg: "User not authorized" });
     }
 
-    Object.keys(req.body).forEach((key) => {
-      if (req.body[key] !== game[key]) {
-        game[key] = req.body[key];
-      }
-    });
+    if (req.body.round) {
+      game.round = req.body.round;
+    }
+
+    if (req.body.phase) {
+      game.phase = req.body.phase;
+    }
+
+    if (req.body.is_active) {
+      game.is_active = req.body.is_active;
+    }
+
     await game.save();
     return res.json({ msg: "Game  Updated", game });
   } catch (error) {
@@ -107,7 +115,7 @@ router.put("/update/:id", auth, async (req, res) => {
 // @desc    Delete Game
 // @access  Private
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
 

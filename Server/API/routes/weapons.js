@@ -3,6 +3,7 @@ const router = express.Router();
 const { check, validationResult } = require("express-validator");
 const auth = require("../../middleware/auth");
 const Weapon = require("../models/Weapon");
+const checkObjectId = require("../../middleware/checkObjectId");
 
 // @access types:
 // Private Token required
@@ -79,7 +80,7 @@ router.post(
 // @route   GET api/weapons/:id
 // @desc    Get Weapon by ID
 // @access  Private
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     const weapon = await Weapon.findById(req.params.id);
 
@@ -139,7 +140,7 @@ router.get("/", auth, async (req, res) => {
 // @desc    Update Weapon
 // @access  Private
 
-router.put("/update/:id", auth, async (req, res) => {
+router.put("/update/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
     const weapon = await Weapon.findById(req.params.id);
@@ -169,7 +170,7 @@ router.put("/update/:id", auth, async (req, res) => {
 // @desc    Delete Weapon
 // @access  Private
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
 

@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require("../../middleware/auth");
 const { check, validationResult } = require("express-validator");
 const Rule = require("../models/Rule");
+const checkObjectId = require("../../middleware/checkObjectId");
 
 // @access types:
 // Private Token required
@@ -47,7 +48,7 @@ router.post(
 // @route   GET api/rules/:id
 // @desc    Get Rule by ID
 // @access  Private
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     const rule = await Rule.findById(req.params.id);
 
@@ -107,7 +108,7 @@ router.get("/", auth, async (req, res) => {
 // @desc    Update Rule
 // @access  Private
 
-router.put("/update/:id", auth, async (req, res) => {
+router.put("/update/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
     const rule = await Rule.findById(req.params.id);
@@ -137,7 +138,7 @@ router.put("/update/:id", auth, async (req, res) => {
 // @desc    Delete Rule
 // @access  Private
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
 

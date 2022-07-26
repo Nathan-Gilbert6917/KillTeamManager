@@ -4,6 +4,7 @@ const { validationResult } = require("express-validator");
 const auth = require("../../middleware/auth");
 const PlayerStats = require("../models/PlayerStats");
 const Game = require("../models/Game");
+const checkObjectId = require("../../middleware/checkObjectId");
 
 // @access types:
 // Private Token required
@@ -40,7 +41,7 @@ router.post("/", auth, async (req, res) => {
 // @route   GET api/player_stats/:id
 // @desc    Get Player Stats by ID
 // @access  Private
-router.get("/:id", auth, async (req, res) => {
+router.get("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     const playerstats = await PlayerStats.findById(req.params.id);
 
@@ -61,7 +62,7 @@ router.get("/:id", auth, async (req, res) => {
 // @route   GET api/player_stats/player/:id/
 // @desc    Get Player Stats by ID
 // @access  Private
-router.get("/player/:id", auth, async (req, res) => {
+router.get("/player/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     const playerstats = await PlayerStats.findOne({ player_id: req.params.id });
 
@@ -82,7 +83,7 @@ router.get("/player/:id", auth, async (req, res) => {
 // @route   GET api/playerstats/game/:id
 // @desc    Get PlayerStats From Game
 // @access  Private
-router.get("/game/:id", auth, async (req, res) => {
+router.get("/game/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     const gamePlayerStats = await Game.findById(req.params.id).select(
       "-code -mission -round -phase -gamemode -is_active"
@@ -103,24 +104,32 @@ router.get("/game/:id", auth, async (req, res) => {
 // @desc    Update PlayerStats
 // @access  Private
 
-router.put("/update/:id", auth, async (req, res) => {
+router.put("/update/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
     const playerstats = await PlayerStats.findById(req.params.id);
     if (!playerstats) {
       return res.json({ msg: "Could not find PlayerStats" });
     } else {
-      validUserDelete = playerstats.owner_id.toString() === req.user.id;
+      validUserDelete = playerstats.player_id.toString() === req.user.id;
     }
     if (!validUserDelete) {
       return res.status(401).json({ msg: "User not authorized" });
     }
 
-    Object.keys(req.body).forEach((key) => {
-      if (req.body[key] !== playerstats[key]) {
-        playerstats[key] = req.body[key];
-      }
-    });
+    if (req.body.victory_points) {
+      playerstats.victory_points = req.body.victory_points;
+    }
+    if (req.body.command_points) {
+      playerstats.command_points = req.body.command_points;
+    }
+    if (req.body.is_ready) {
+      playerstats.is_ready = req.body.is_ready;
+    }
+    if (req.body.is_winner) {
+      playerstats.is_winner = req.body.is_winner;
+    }
+
     await playerstats.save();
     return res.json({ msg: "PlayerStats  Updated", playerstats });
   } catch (error) {
@@ -133,7 +142,7 @@ router.put("/update/:id", auth, async (req, res) => {
 // @desc    Delete PlayerStats
 // @access  Private
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
 
