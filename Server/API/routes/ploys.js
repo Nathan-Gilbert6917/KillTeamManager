@@ -49,6 +49,65 @@ router.post(
   }
 );
 
+// @route   GET api/ploys/:id
+// @desc    Get Ploy by ID
+// @access  Private
+router.get("/:id", auth, async (req, res) => {
+  try {
+    const ploy = await Ploy.findById(req.params.id);
+
+    if (!ploy) {
+      return res.status(404).json({ msg: "Ploy not found" });
+    }
+
+    return res.json(ploy);
+  } catch (error) {
+    console.error(error.message);
+    if (error.kind === "ObjectId") {
+      return res.status(404).json({ msg: "Ploy not found" });
+    }
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
+// @route   GET api/ploys
+// @desc    Get all Ploy w/ filters
+// @access  Private
+router.get("/", auth, async (req, res) => {
+  try {
+    let searchTerm = "";
+    let sort = 1;
+    let limit = null;
+    let isUserMade = false;
+
+    const filters = req.body.filters;
+    if (filters) {
+      if (filters.search_term) searchTerm = req.body.filters.search_term;
+      if (filters.sort) sort = req.body.filters.sort;
+      if (filters.limit) limit = req.body.filters.limit;
+      if (filters.user_made) isUserMade = req.body.filters.user_made;
+    }
+
+    const filteredPloys = await Ploy.find({
+      name: { $regex: ".*" + searchTerm + ".*" },
+      is_user_created: isUserMade,
+    })
+      .sort({
+        name: sort,
+      })
+      .limit(limit);
+
+    if (!filteredPloys) {
+      return res.status(404).json({ msg: "No Ploys found" });
+    }
+
+    return res.json(filteredPloys);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/ploys
 // @desc    Delete Ploy
 // @access  Private

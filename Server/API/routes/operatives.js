@@ -95,6 +95,63 @@ router.post(
   }
 );
 
+// @route   GET api/operatives/:id
+// @desc    Get Operatives by ID
+// @access  Private
+router.get("/:id", auth, async (req, res) => {
+  try {
+    const operative = await Operative.findById(req.params.id);
+
+    if (!operative) {
+      return res.status(404).json({ msg: "Operative not found" });
+    }
+
+    return res.json(operative);
+  } catch (error) {
+    console.error(error.message);
+    if (error.kind === "ObjectId") {
+      return res.status(404).json({ msg: "Operative not found" });
+    }
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
+// @route   GET api/operatives
+// @desc    Get all Operatives w/ filters
+// @access  Private
+router.get("/", auth, async (req, res) => {
+  try {
+    let searchTerm = "";
+    let sort = 1;
+    let limit = null;
+
+    const filters = req.body.filters;
+    if (filters) {
+      if (filters.search_term) searchTerm = req.body.filters.search_term;
+      if (filters.sort) sort = req.body.filters.sort;
+      if (filters.limit) limit = req.body.filters.limit;
+    }
+
+    const filteredOperatives = await Operative.find({
+      owner_id: req.user.id,
+      name: { $regex: ".*" + searchTerm + ".*" },
+    })
+      .sort({
+        name: sort,
+      })
+      .limit(limit);
+
+    if (!filteredOperatives) {
+      return res.status(404).json({ msg: "No Operatives found" });
+    }
+
+    return res.json(filteredOperatives);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/operatives
 // @desc    Delete Operative
 // @access  Private

@@ -76,6 +76,65 @@ router.post(
   }
 );
 
+// @route   GET api/weapons/:id
+// @desc    Get Weapon by ID
+// @access  Private
+router.get("/:id", auth, async (req, res) => {
+  try {
+    const weapon = await Weapon.findById(req.params.id);
+
+    if (!weapon) {
+      return res.status(404).json({ msg: "Weapon not found" });
+    }
+
+    return res.json(weapon);
+  } catch (error) {
+    console.error(error.message);
+    if (error.kind === "ObjectId") {
+      return res.status(404).json({ msg: "Weapon not found" });
+    }
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
+// @route   GET api/weapons
+// @desc    Get all Weapons w/ filters
+// @access  Private
+router.get("/", auth, async (req, res) => {
+  try {
+    let searchTerm = "";
+    let sort = 1;
+    let limit = null;
+    let isUserMade = false;
+
+    const filters = req.body.filters;
+    if (filters) {
+      if (filters.search_term) searchTerm = req.body.filters.search_term;
+      if (filters.sort) sort = req.body.filters.sort;
+      if (filters.limit) limit = req.body.filters.limit;
+      if (filters.user_made) isUserMade = req.body.filters.user_made;
+    }
+
+    const filteredWeapons = await Weapon.find({
+      name: { $regex: ".*" + searchTerm + ".*" },
+      is_user_created: isUserMade,
+    })
+      .sort({
+        name: sort,
+      })
+      .limit(limit);
+
+    if (!filteredWeapons) {
+      return res.status(404).json({ msg: "No Weapons found" });
+    }
+
+    return res.json(filteredWeapons);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/weapons
 // @desc    Delete Weapon
 // @access  Private

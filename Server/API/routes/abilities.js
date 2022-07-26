@@ -1,3 +1,4 @@
+const { json } = require("express");
 const express = require("express");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
@@ -44,6 +45,65 @@ router.post(
   }
 );
 
+// @route   GET api/abilities/:id
+// @desc    Get Ability by ID
+// @access  Private
+router.get("/:id", auth, async (req, res) => {
+  try {
+    const ability = await Ability.findById(req.params.id);
+
+    if (!ability) {
+      return res.status(404).json({ msg: "Ability not found" });
+    }
+
+    return res.json(ability);
+  } catch (error) {
+    console.error(error.message);
+    if (error.kind === "ObjectId") {
+      return res.status(404).json({ msg: "Ability not found" });
+    }
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
+// @route   GET api/abilities
+// @desc    Get all Abilities w/ filters
+// @access  Private
+router.get("/", auth, async (req, res) => {
+  try {
+    let searchTerm = "";
+    let sort = 1;
+    let limit = null;
+    let isUserMade = false;
+
+    const filters = req.body.filters;
+    if (filters) {
+      if (filters.search_term) searchTerm = req.body.filters.search_term;
+      if (filters.sort) sort = req.body.filters.sort;
+      if (filters.limit) limit = req.body.filters.limit;
+      if (filters.user_made) isUserMade = req.body.filters.user_made;
+    }
+
+    const filteredAbilities = await Ability.find({
+      name: { $regex: ".*" + searchTerm + ".*" },
+      is_user_created: isUserMade,
+    })
+      .sort({
+        name: sort,
+      })
+      .limit(limit);
+
+    if (!filteredAbilities) {
+      return res.status(404).json({ msg: "No Abilities found" });
+    }
+
+    return res.json(filteredAbilities);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/abilities
 // @desc    Delete Ability
 // @access  Private
@@ -54,7 +114,7 @@ router.delete("/", auth, async (req, res) => {
 
     const ability = await Ability.findById(req.body.id);
     if (!ability) {
-      return res.json({ msg: "Could not find Ability" });
+      return res.status(404).json({ msg: "No Ability found" });
     } else {
       validUserDelete = ability.owner_id.toString() === req.user.id;
     }

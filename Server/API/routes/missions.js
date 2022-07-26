@@ -63,6 +63,65 @@ router.post(
   }
 );
 
+// @route   GET api/missions/:id
+// @desc    Get Mission by ID
+// @access  Private
+router.get("/:id", auth, async (req, res) => {
+  try {
+    const mission = await Mission.findById(req.params.id);
+
+    if (!mission) {
+      return res.status(404).json({ msg: "Mission not found" });
+    }
+
+    return res.json(mission);
+  } catch (error) {
+    console.error(error.message);
+    if (error.kind === "ObjectId") {
+      return res.status(404).json({ msg: "Mission not found" });
+    }
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
+// @route   GET api/missions
+// @desc    Get all Mission w/ filters
+// @access  Private
+router.get("/", auth, async (req, res) => {
+  try {
+    let searchTerm = "";
+    let sort = 1;
+    let limit = null;
+    let isUserMade = false;
+
+    const filters = req.body.filters;
+    if (filters) {
+      if (filters.search_term) searchTerm = req.body.filters.search_term;
+      if (filters.sort) sort = req.body.filters.sort;
+      if (filters.limit) limit = req.body.filters.limit;
+      if (filters.user_made) isUserMade = req.body.filters.user_made;
+    }
+
+    const filteredMissions = await Mission.find({
+      name: { $regex: ".*" + searchTerm + ".*" },
+      is_user_created: isUserMade,
+    })
+      .sort({
+        name: sort,
+      })
+      .limit(limit);
+
+    if (!filteredMissions) {
+      return res.status(404).json({ msg: "No Missions found" });
+    }
+
+    return res.json(filteredMissions);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/missions
 // @desc    Delete Mission
 // @access  Private

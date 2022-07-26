@@ -53,6 +53,63 @@ router.post(
   }
 );
 
+// @route   GET api/teams/:id
+// @desc    Get Team by ID
+// @access  Private
+router.get("/:id", auth, async (req, res) => {
+  try {
+    const team = await Team.findById(req.params.id);
+
+    if (!team) {
+      return res.status(404).json({ msg: "Team not found" });
+    }
+
+    return res.json(team);
+  } catch (error) {
+    console.error(error.message);
+    if (error.kind === "ObjectId") {
+      return res.status(404).json({ msg: "Team not found" });
+    }
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
+// @route   GET api/teams
+// @desc    Get all Teams for a user w/ optional filters
+// @access  Private
+router.get("/", auth, async (req, res) => {
+  try {
+    let searchTerm = "";
+    let sort = 1;
+    let limit = null;
+
+    const filters = req.body.filters;
+    if (filters) {
+      if (filters.search_term) searchTerm = req.body.filters.search_term;
+      if (filters.sort) sort = req.body.filters.sort;
+      if (filters.limit) limit = req.body.filters.limit;
+    }
+
+    const filteredTeams = await Team.find({
+      owner_id: req.user.id,
+      name: { $regex: ".*" + searchTerm + ".*" },
+    })
+      .sort({
+        name: sort,
+      })
+      .limit(limit);
+
+    if (!filteredTeams) {
+      return res.status(404).json({ msg: "No Teams found" });
+    }
+
+    return res.json(filteredTeams);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/teams
 // @desc    Delete Team
 // @access  Private

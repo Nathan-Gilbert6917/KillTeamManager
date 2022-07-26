@@ -52,6 +52,27 @@ router.post(
   }
 );
 
+// @route   GET api/games/:id
+// @desc    Get Game by ID
+// @access  Private
+router.get("/:id", auth, async (req, res) => {
+  try {
+    const game = await Game.findById(req.params.id);
+
+    if (!game) {
+      return res.status(404).json({ msg: "Game not found" });
+    }
+
+    return res.json(game);
+  } catch (error) {
+    console.error(error.message);
+    if (error.kind === "ObjectId") {
+      return res.status(404).json({ msg: "Game not found" });
+    }
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/games
 // @desc    Delete Game
 // @access  Private
