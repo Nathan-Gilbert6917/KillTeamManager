@@ -135,30 +135,30 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// @route   UPDATE api/weapons/:id
+// @route   UPDATE api/weapons/update/:id
 // @desc    Update Weapon
 // @access  Private
 
-router.delete("/", auth, async (req, res) => {
+router.put("/update/:id", auth, async (req, res) => {
   try {
     let validUserDelete = false;
-
-    const weapon = await Weapon.findById(req.body.id);
+    const weapon = await Weapon.findById(req.params.id);
     if (!weapon) {
       return res.json({ msg: "Could not find Weapon" });
     } else {
       validUserDelete = weapon.owner_id.toString() === req.user.id;
     }
-
-    if (validUserDelete) {
-      let result = await Weapon.findByIdAndDelete(req.body.id);
-      if (!result) {
-        return res.json({ msg: "Error Weapon Not Deleted" });
-      } else {
-        return res.json({ msg: "Weapon Deleted" });
-      }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
     }
-    return res.json({ msg: "Error Weapon Not Deleted" });
+
+    Object.keys(req.body).forEach((key) => {
+      if (req.body[key] !== weapon[key]) {
+        weapon[key] = req.body[key];
+      }
+    });
+    await weapon.save();
+    return res.json({ msg: "Weapon  Updated", weapon });
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error: " + error.message);

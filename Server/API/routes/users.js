@@ -97,6 +97,45 @@ router.get("/:id", auth, async (req, res) => {
   }
 });
 
+// @route   UPDATE api/users/update/:id
+// @desc    Update User
+// @access  Private
+
+router.put("/update/:id", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.json({ msg: "Could not find User" });
+    } else {
+      validUserDelete = user.id.toString() === req.user.id;
+    }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+
+    if (req.body.username) {
+      user.username = req.body.username;
+    }
+
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      const password = await bcrypt.hash(req.body.password, salt);
+      user.password = password;
+    }
+
+    if (req.body.email) {
+      user.email = req.body.email;
+    }
+
+    await user.save();
+    return res.json({ msg: "User  Updated", user });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/users/:id
 // @desc    Delete User
 // @access  Private

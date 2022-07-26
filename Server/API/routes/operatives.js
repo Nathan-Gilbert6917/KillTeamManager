@@ -152,6 +152,36 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+// @route   UPDATE api/operatives/update/:id
+// @desc    Update Operative
+// @access  Private
+
+router.put("/update/:id", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+    const operative = await Operative.findById(req.params.id);
+    if (!operative) {
+      return res.json({ msg: "Could not find Operative" });
+    } else {
+      validUserDelete = operative.owner_id.toString() === req.user.id;
+    }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+
+    Object.keys(req.body).forEach((key) => {
+      if (req.body[key] !== operative[key]) {
+        operative[key] = req.body[key];
+      }
+    });
+    await operative.save();
+    return res.json({ msg: "Operative  Updated", operative });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/operatives/:id
 // @desc    Delete Operative
 // @access  Private

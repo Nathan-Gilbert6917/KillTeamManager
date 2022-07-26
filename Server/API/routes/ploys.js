@@ -108,6 +108,36 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+// @route   UPDATE api/ploys/update/:id
+// @desc    Update Ploy
+// @access  Private
+
+router.put("/update/:id", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+    const ploy = await Ploy.findById(req.params.id);
+    if (!ploy) {
+      return res.json({ msg: "Could not find Ploy" });
+    } else {
+      validUserDelete = ploy.owner_id.toString() === req.user.id;
+    }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+
+    Object.keys(req.body).forEach((key) => {
+      if (req.body[key] !== ploy[key]) {
+        ploy[key] = req.body[key];
+      }
+    });
+    await ploy.save();
+    return res.json({ msg: "Ploy  Updated", ploy });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/ploys/:id
 // @desc    Delete Ploy
 // @access  Private

@@ -105,6 +105,36 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+// @route   UPDATE api/tacopscards/update/:id
+// @desc    Update TacOpsCard
+// @access  Private
+
+router.put("/update/:id", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+    const tacOpsCard = await TacOpsCard.findById(req.params.id);
+    if (!tacOpsCard) {
+      return res.json({ msg: "Could not find TacOpsCard" });
+    } else {
+      validUserDelete = tacOpsCard.owner_id.toString() === req.user.id;
+    }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+
+    Object.keys(req.body).forEach((key) => {
+      if (req.body[key] !== tacOpsCard[key]) {
+        tacOpsCard[key] = req.body[key];
+      }
+    });
+    await tacOpsCard.save();
+    return res.json({ msg: "TacOpsCard  Updated", tacOpsCard });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/tac_ops_cards/:id
 // @desc    Delete Tac_ops_card
 // @access  Private

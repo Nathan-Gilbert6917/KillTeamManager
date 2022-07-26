@@ -103,6 +103,36 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+// @route   UPDATE api/rules/update/:id
+// @desc    Update Rule
+// @access  Private
+
+router.put("/update/:id", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+    const rule = await Rule.findById(req.params.id);
+    if (!rule) {
+      return res.json({ msg: "Could not find Rule" });
+    } else {
+      validUserDelete = rule.owner_id.toString() === req.user.id;
+    }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+
+    Object.keys(req.body).forEach((key) => {
+      if (req.body[key] !== rule[key]) {
+        rule[key] = req.body[key];
+      }
+    });
+    await rule.save();
+    return res.json({ msg: "Rule  Updated", rule });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/rules/:id
 // @desc    Delete Rule
 // @access  Private

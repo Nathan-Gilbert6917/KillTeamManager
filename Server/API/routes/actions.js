@@ -108,6 +108,36 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+// @route   UPDATE api/actions/update/:id
+// @desc    Update Action
+// @access  Private
+
+router.put("/update/:id", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+    const action = await Action.findById(req.params.id);
+    if (!action) {
+      return res.json({ msg: "Could not find Action" });
+    } else {
+      validUserDelete = action.owner_id.toString() === req.user.id;
+    }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+
+    Object.keys(req.body).forEach((key) => {
+      if (req.body[key] !== action[key]) {
+        action[key] = req.body[key];
+      }
+    });
+    await action.save();
+    return res.json({ msg: "Action  Updated", action });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/actions/:id
 // @desc    Delete Action
 // @access  Private

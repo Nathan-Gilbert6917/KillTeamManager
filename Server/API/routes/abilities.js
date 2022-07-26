@@ -104,6 +104,36 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+// @route   UPDATE api/abilities/update/:id
+// @desc    Update Ability
+// @access  Private
+
+router.put("/update/:id", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+    const ability = await Ability.findById(req.params.id);
+    if (!ability) {
+      return res.json({ msg: "Could not find Ability" });
+    } else {
+      validUserDelete = ability.owner_id.toString() === req.user.id;
+    }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+
+    Object.keys(req.body).forEach((key) => {
+      if (req.body[key] !== ability[key]) {
+        ability[key] = req.body[key];
+      }
+    });
+    await ability.save();
+    return res.json({ msg: "Ability  Updated", ability });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/abilities/:id
 // @desc    Delete Ability
 // @access  Private

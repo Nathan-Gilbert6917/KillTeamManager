@@ -122,6 +122,36 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+// @route   UPDATE api/missions/update/:id
+// @desc    Update Mission
+// @access  Private
+
+router.put("/update/:id", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+    const mission = await Mission.findById(req.params.id);
+    if (!mission) {
+      return res.json({ msg: "Could not find Mission" });
+    } else {
+      validUserDelete = mission.owner_id.toString() === req.user.id;
+    }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+
+    Object.keys(req.body).forEach((key) => {
+      if (req.body[key] !== mission[key]) {
+        mission[key] = req.body[key];
+      }
+    });
+    await mission.save();
+    return res.json({ msg: "Mission  Updated", mission });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/missions/:id
 // @desc    Delete Mission
 // @access  Private

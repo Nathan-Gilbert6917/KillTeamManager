@@ -99,6 +99,36 @@ router.get("/game/:id", auth, async (req, res) => {
   }
 });
 
+// @route   UPDATE api/playerstats/update/:id
+// @desc    Update PlayerStats
+// @access  Private
+
+router.put("/update/:id", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+    const playerstats = await PlayerStats.findById(req.params.id);
+    if (!playerstats) {
+      return res.json({ msg: "Could not find PlayerStats" });
+    } else {
+      validUserDelete = playerstats.owner_id.toString() === req.user.id;
+    }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+
+    Object.keys(req.body).forEach((key) => {
+      if (req.body[key] !== playerstats[key]) {
+        playerstats[key] = req.body[key];
+      }
+    });
+    await playerstats.save();
+    return res.json({ msg: "PlayerStats  Updated", playerstats });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/playerstats/:id
 // @desc    Delete PlayerStats
 // @access  Private

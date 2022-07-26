@@ -73,6 +73,36 @@ router.get("/:id", auth, async (req, res) => {
   }
 });
 
+// @route   UPDATE api/games/update/:id
+// @desc    Update Game
+// @access  Private
+
+router.put("/update/:id", auth, async (req, res) => {
+  try {
+    let validUserDelete = false;
+    const game = await Game.findById(req.params.id);
+    if (!game) {
+      return res.json({ msg: "Could not find Game" });
+    } else {
+      validUserDelete = game.owner_id.toString() === req.user.id;
+    }
+    if (!validUserDelete) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+
+    Object.keys(req.body).forEach((key) => {
+      if (req.body[key] !== game[key]) {
+        game[key] = req.body[key];
+      }
+    });
+    await game.save();
+    return res.json({ msg: "Game  Updated", game });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error: " + error.message);
+  }
+});
+
 // @route   DELETE api/games/:id
 // @desc    Delete Game
 // @access  Private
