@@ -2,8 +2,8 @@ import React, { Fragment } from "react";
 import "./Register.css";
 
 import { Link } from "react-router-dom";
-import Button from "../../Button/Button";
-import TextInput from "../../TextInput/TextInput";
+import Button from "../../Components/Button/Button";
+import TextInput from "../../Components/TextInput/TextInput";
 
 const Register = () => {
   return (
