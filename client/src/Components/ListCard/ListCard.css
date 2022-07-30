@@ -1,0 +1,21 @@
+/* .list-item-container {
+  padding: 20px;
+} */
+
+.list-item-container {
+  border-bottom: 1px solid #22222233;
+}
+
+.list-item-container:first-child {
+  border-top: none;
+  border-bottom: 1px solid #22222233;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+.list-item-container:last-child {
+  border-bottom: none;
+  border-top: none;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+}

@@ -1,0 +1,28 @@
+.tab-set-container {
+  display: flex;
+  list-style: none;
+  gap: 1px;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.tab-set-container :first-child {
+  border-top-left-radius: 10px;
+}
+
+.tab-set-container :last-child {
+  border-top-right-radius: 10px;
+}
+
+.tab-content {
+  background-color: #FBFBF2;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding: 40px;
+  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.1);
+}

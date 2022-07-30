@@ -105,11 +105,11 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// @route   UPDATE api/abilities/update/:id
+// @route   UPDATE api/abilities/:id
 // @desc    Update Ability
 // @access  Private
 
-router.put("/update/:id", auth, checkObjectId("id"), async (req, res) => {
+router.put("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
     const ability = await Ability.findById(req.params.id);

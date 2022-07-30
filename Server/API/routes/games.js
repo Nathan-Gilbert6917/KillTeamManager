@@ -74,11 +74,11 @@ router.get("/:id", auth, checkObjectId("id"), async (req, res) => {
   }
 });
 
-// @route   UPDATE api/games/update/:id
+// @route   UPDATE api/games/:id
 // @desc    Update Game
 // @access  Private
 
-router.put("/update/:id", auth, checkObjectId("id"), async (req, res) => {
+router.put("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
     const game = await Game.findById(req.params.id);

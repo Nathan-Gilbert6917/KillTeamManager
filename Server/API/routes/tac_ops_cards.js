@@ -106,11 +106,11 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// @route   UPDATE api/tac_ops_cards/update/:id
+// @route   UPDATE api/tac_ops_cards/:id
 // @desc    Update TacOpsCard
 // @access  Private
 
-router.put("/update/:id", auth, checkObjectId("id"), async (req, res) => {
+router.put("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
     const tacOpsCard = await TacOpsCard.findById(req.params.id);

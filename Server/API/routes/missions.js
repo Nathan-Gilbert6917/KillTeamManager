@@ -123,11 +123,11 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// @route   UPDATE api/missions/update/:id
+// @route   UPDATE api/missions/:id
 // @desc    Update Mission
 // @access  Private
 
-router.put("/update/:id", auth, checkObjectId("id"), async (req, res) => {
+router.put("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
     const mission = await Mission.findById(req.params.id);

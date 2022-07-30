@@ -111,11 +111,11 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// @route   UPDATE api/teams/update/:id
+// @route   UPDATE api/teams/:id
 // @desc    Update Team
 // @access  Private
 
-router.put("/update/:id", auth, checkObjectId("id"), async (req, res) => {
+router.put("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
     const team = await Team.findById(req.params.id);

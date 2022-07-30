@@ -98,11 +98,11 @@ router.get("/:id", auth, checkObjectId("id"), async (req, res) => {
   }
 });
 
-// @route   UPDATE api/users/update/:id
+// @route   UPDATE api/users/:id
 // @desc    Update User
 // @access  Private
 
-router.put("/update/:id", auth, checkObjectId("id"), async (req, res) => {
+router.put("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
     const user = await User.findById(req.params.id);

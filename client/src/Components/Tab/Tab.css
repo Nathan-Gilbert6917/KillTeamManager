@@ -1,0 +1,17 @@
+.tab-container {
+  text-align: center;
+  width: 100%;
+  min-width: 10px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  background-color: #DB324D;
+  padding: 7px;
+  color: #FBFBF2;
+  cursor: pointer;
+}
+
+.tab-container-active {
+  background-color: #A62639;
+  cursor: default;
+}

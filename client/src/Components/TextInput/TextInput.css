@@ -1,0 +1,38 @@
+.text-input-box {
+  box-sizing: border-box;
+}
+
+.text-input-box .text-input-inner {
+  position: relative;
+}
+
+.text-input-box .text-input-inner .input-field {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 1.5em;
+  color: var(--primary-color);
+  margin-bottom: 30px;
+  border: none;
+  border-bottom: 2px solid var(--primary-color);
+  outline: none;
+  background: transparent;
+}
+
+.text-input-box .text-input-inner .input-label {
+  position: absolute;
+  top:0;
+  left: 0;
+  padding: 10px 0;
+  font-size: 1.5em;
+  color: var(--primary-color);
+  pointer-events: none;
+  transition: .5s;
+}
+
+.text-input-box .text-input-inner .input-field:focus ~ .input-label,
+.text-input-box .text-input-inner .input-field:valid ~ .input-label {
+  top: -20px;
+  left: 0;
+  color: var(--primary-color);
+  font-size: 1em;
+}

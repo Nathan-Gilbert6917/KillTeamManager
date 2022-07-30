@@ -136,11 +136,11 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// @route   UPDATE api/weapons/update/:id
+// @route   UPDATE api/weapons/:id
 // @desc    Update Weapon
 // @access  Private
 
-router.put("/update/:id", auth, checkObjectId("id"), async (req, res) => {
+router.put("/:id", auth, checkObjectId("id"), async (req, res) => {
   try {
     let validUserDelete = false;
     const weapon = await Weapon.findById(req.params.id);

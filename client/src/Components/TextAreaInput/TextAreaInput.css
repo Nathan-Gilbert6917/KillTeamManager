@@ -1,0 +1,29 @@
+.textarea-container {
+  width: 100%;
+}
+
+.textarea-field {
+  background: none;
+  border: none;
+  border-bottom: solid 2px rgb(46, 46, 46);
+  font-size: 1em;
+  font-weight: 400;
+  letter-spacing: 1px;
+  margin: 0em 0 1.875em 0;
+  padding: 0.5em 0 0.5em 1px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  box-sizing: border-box;
+  font: inherit;
+  line-height: normal;
+  resize: none;
+  overflow: auto;
+  margin: 0;
+  width: 100%;
+}
+
+.textarea-field:focus{
+  outline: none;
+}
