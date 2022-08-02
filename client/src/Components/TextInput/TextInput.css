@@ -9,7 +9,7 @@
 .text-input-box .text-input-inner .input-field {
   width: 100%;
   padding: 10px 0;
-  font-size: 1.5em;
+  font-size: 1.1em;
   color: var(--primary-color);
   margin-bottom: 30px;
   border: none;
@@ -20,19 +20,26 @@
 
 .text-input-box .text-input-inner .input-label {
   position: absolute;
-  top:0;
+  top: 0;
   left: 0;
-  padding: 10px 0;
+  padding: -30px 0;
   font-size: 1.5em;
   color: var(--primary-color);
   pointer-events: none;
   transition: .5s;
 }
 
-.text-input-box .text-input-inner .input-field:focus ~ .input-label,
-.text-input-box .text-input-inner .input-field:valid ~ .input-label {
-  top: -20px;
+.text-input-box .text-input-inner .input-field:focus ~.input-label,
+.text-input-box .text-input-inner .input-field:valid ~.input-label {
+  top: -25px;
   left: 0;
+  padding: 10px 0;
   color: var(--primary-color);
   font-size: 1em;
+  background: transparent;
+}
+
+.input-field:-webkit-autofill,
+.input-field:-webkit-autofill:focus {
+  transition: background-color 600000s 0s, color 600000s 0s;
 }

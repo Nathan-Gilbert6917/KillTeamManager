@@ -1,0 +1,42 @@
+.alert {
+  position:relative;
+  top: 10px;
+  max-width: 400px;
+  width: 60%;
+  text-align: center;
+  padding: 0.8rem;
+  margin: 1rem 0;
+  opacity: 0.8;
+  z-index: 10;
+  border-radius: 3px;
+}
+
+.alert-timer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  animation: alert 7s ease;
+  border-radius: 3px;
+}
+
+.alert-message {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  z-index: 3;
+}
+
+@keyframes alert {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%
+  }
+}

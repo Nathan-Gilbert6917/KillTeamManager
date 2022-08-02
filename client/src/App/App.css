@@ -3,3 +3,75 @@
   height: 100%; 
 }
 
+.title {
+  font-size: 3em;
+  font-family: 'Saira', sans-serif;
+  margin-bottom: 1em;
+  color: var(--accent-color);
+}
+
+.page {
+  position: relative;
+  width: 80%;
+  height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.background {
+  width:100%;
+  height: 100vh;
+  background: var(--secondary-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+}
+
+.text-centered {
+  text-align: center;
+}
+
+/* Alerts */
+
+/* Alert Success */
+.alert-success {
+  background-color: #00800080;
+}
+
+.alert-success-timer {
+  background-color: #008000;
+}
+
+.alert-success-msg {
+  color: #000000;
+}
+
+/* Alert Danger */
+.alert-danger {
+  background-color: #DB324D80;
+}
+
+.alert-danger-timer {
+  background-color: #DB324D;
+}
+
+.alert-danger-msg {
+  color: #000000;
+}
+
+/* Alert Info */
+.alert-info {
+  background-color: #3a32db80;
+}
+
+.alert-info-timer {
+  background-color: #3a32db;
+}
+
+.alert-info-msg {
+  color: #000000;
+}

@@ -51,25 +51,6 @@ router.post(
       user.password = await bcrypt.hash(password, salt);
 
       await user.save();
-
-      // Return jsonwebtoken
-
-      const payload = {
-        user: {
-          id: user.id,
-        },
-      };
-
-      jwt.sign(
-        payload,
-        config.get("jwtSecret"),
-        { expiresIn: config.get("tokenExpiration") },
-
-        (error, token) => {
-          if (error) throw error;
-          res.json({ token });
-        }
-      );
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Server error: " + error.message);
