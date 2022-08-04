@@ -1,16 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import "./TextInput.css";
 
-const TextInput = ({ label, type, value, name, onChange }) => {
-  if (!type) type = "text";
-  if (!label) label = "";
+import { faEyeSlash, faEye } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+const TextInput = ({ label = "", type = "text", value, name, onChange, show = true}) => {
+  const isText = type === "text";
+  const [showPassword, setShowPassword] = useState(show);
+  let inputType = showPassword ? "text" : "password";
+
+  const handleShowClick = () => {
+    setShowPassword(!showPassword);
+  }
 
   return (
     <div className="text-input-box">
       <div className="text-input-inner">
+        {(type === "password") && (showPassword ? 
+          <FontAwesomeIcon icon={faEye} className="show-password-icon" onClick={() => handleShowClick()} />:
+          <FontAwesomeIcon icon={faEyeSlash} className="hide-password-icon" onClick={() => handleShowClick()} />
+        )}
         <input
           className="input-field"
-          type={type}
+          type={isText ? "text" : inputType}
           name={name}
           value={value}
           required

@@ -43,3 +43,10 @@
 .input-field:-webkit-autofill:focus {
   transition: background-color 600000s 0s, color 600000s 0s;
 }
+
+.hide-password-icon,
+.show-password-icon {
+  position: absolute;
+  top: 16%;
+  right: 0;
+}
