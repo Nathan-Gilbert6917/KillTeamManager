@@ -1,25 +1,31 @@
 .home-layout {
-  height: 100%;
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-items: center;
   text-align: center;
-  margin: auto;
   color: var(--accent-color);
 }
 
 .home-layout .title {
-  margin: 12% 0 0;
+  margin: 12% 0;
 }
 
 .dashboard-container {
-  height: 100%;
-  padding: 0 10%;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
-  gap: 10%;
+}
+
+.dashboard-container .link {
+  margin-bottom: 10%;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+@media only screen and (max-width: 600px) {
+  .dashboard-container {
+    grid-template-columns: auto;
+  }
 }

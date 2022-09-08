@@ -9,29 +9,28 @@ import "./Dashboard.css";
 const Dashboard = ({ isAuthenticated }) => {
   return (
     <Fragment>
-    {!isAuthenticated && <Navigate replace to="/" />}
-    <section className="page">
-      <div className="home-layout">
-        <span className="title">KillTeam Manager</span>
-        <Alert />
-        <div className="dashboard-container">
-          <Link to="/create" className="link">
-            <Button label="Create Game" />
-          </Link>
-          <Link to="/join" className="link">
-            <Button label="Join Game" />
-          </Link>
-          <Link to="/collections" className="link">
-            <Button label="Collections" />
-          </Link>
-          <Link to="/settings" className="link">
-            <Button label="Settings" />
-          </Link>
+      {!isAuthenticated && <Navigate replace to="/" />}
+      <section className="page">
+        <div className="home-layout">
+          <span className="title">KillTeam Manager</span>
+          <Alert />
+          <grid className="dashboard-container">
+            <Link to="/create" className="link">
+              <Button label="Create Game" />
+            </Link>
+            <Link to="/join" className="link">
+              <Button label="Join Game" />
+            </Link>
+            <Link to="/collections" className="link">
+              <Button label="Collections" />
+            </Link>
+            <Link to="/settings" className="link">
+              <Button label="Settings" />
+            </Link>
+          </grid>
         </div>
-      </div>
-    </section>
+      </section>
     </Fragment>
-    
   );
 };
 
