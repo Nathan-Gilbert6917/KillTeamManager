@@ -22,8 +22,10 @@ const Button = ({
 
   return (
     <button onClick={handleClick} className={buttonClass} disabled={disabled}>
-      <span className={buttonIconClass}>{icon}</span>
-      <span className="button-label">{label}</span>
+      <div className="inner-button">
+        <span className={buttonIconClass}>{icon}</span>
+        <span className="button-label">{label}</span>
+      </div>
     </button>
   );
 };

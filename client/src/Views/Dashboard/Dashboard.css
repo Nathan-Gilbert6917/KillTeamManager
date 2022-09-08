@@ -1,4 +1,5 @@
 .home-layout {
+  height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -7,4 +8,18 @@
   text-align: center;
   margin: auto;
   color: var(--accent-color);
+}
+
+.home-layout .title {
+  margin: 12% 0 0;
+}
+
+.dashboard-container {
+  height: 100%;
+  padding: 0 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 10%;
 }

@@ -1,15 +1,16 @@
 .button-style {
-    padding: 0;
+    padding: 0 10px;
     border: none;
     background: none;
     border-radius: 3px;
-    width: 100px;
-    height: 42px;
+    width: 200px;
+    height: 60px;
     color: var(--accent-color);
     background-color: var(--primary-color);
     white-space: nowrap;
     cursor: pointer;
     text-decoration: none;
+    font-size: 1rem;
 }
 
 .button-style:hover {
