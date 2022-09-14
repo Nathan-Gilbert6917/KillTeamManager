@@ -5,12 +5,14 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  margin: auto;
+  margin: 0 auto;
   color: var(--accent-color);
+  margin: 1rem 0;
 }
 
 .landing-inner p {
   font-size: 1.2em;
+  max-width: 30rem;
 }
 
 .button-container {

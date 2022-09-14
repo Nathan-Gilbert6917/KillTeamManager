@@ -1,6 +1,5 @@
 .App {
-  width: 100%;
-  height: 100%; 
+  margin-bottom: 10rem;
 }
 
 .title {
@@ -11,18 +10,15 @@
 }
 
 .page {
-  position: relative;
-  width: 80%;
-  height: 100vh;
+  min-height: 100vh;
   margin: 0 auto;
-  display: flex;
+  display: grid;
   align-items: center;
-  justify-content: center;
 }
 
 .background {
   width:100%;
-  height: 100vh;
+  min-height: 100vh;
   background: var(--secondary-color);
   display: flex;
   flex-direction: column;
