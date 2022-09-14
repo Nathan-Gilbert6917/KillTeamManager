@@ -10,10 +10,12 @@ const Dashboard = ({ isAuthenticated }) => {
   return (
     <Fragment>
       {!isAuthenticated && <Navigate replace to="/" />}
+
       <section className="page">
+        <Alert />
         <div className="home-layout">
           <span className="title">KillTeam Manager</span>
-          <Alert />
+
           <grid className="dashboard-container">
             <Link to="/create" className="link">
               <Button label="Create Game" />
