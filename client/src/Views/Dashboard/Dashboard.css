@@ -1,14 +1,15 @@
+.user {
+  position: absolute;
+  top: 2em;
+  right: 3em;
+}
+
 .home-layout {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-items: center;
+  margin: 5rem 0;
   text-align: center;
   color: var(--accent-color);
-}
-
-.home-layout .title {
-  margin: 12% 0;
 }
 
 .dashboard-container {
