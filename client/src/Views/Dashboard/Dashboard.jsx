@@ -24,11 +24,23 @@ const Dashboard = ({ auth: { isAuthenticated }, logout }) => {
           <span className="title">KillTeam Manager</span>
 
           <grid className="dashboard-container">
-            <Link to="/collections" className="link">
-              <Button label="Collections" />
+            <Link to="/teams" className="link">
+              <Button label="Teams" />
             </Link>
-            <Link to="/settings" className="link">
-              <Button label="Settings" />
+            <Link to="/operatives" className="link">
+              <Button label="Operatives" />
+            </Link>
+            <Link to="/actions" className="link">
+              <Button label="Actions" />
+            </Link>
+            <Link to="/weapons" className="link">
+              <Button label="Weapons" />
+            </Link>
+            <Link to="/abilities" className="link">
+              <Button label="Abilities" />
+            </Link>
+            <Link to="/rules" className="link">
+              <Button label="Rules" />
             </Link>
           </grid>
         </div>

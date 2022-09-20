@@ -8,6 +8,7 @@ const Button = ({
   isInverted,
   showShadow,
   disabled,
+  iconAlt,
   handleClick,
 }) => {
   let buttonClass = isCircular ? "button-style circular" : "button-style";
@@ -23,7 +24,7 @@ const Button = ({
   return (
     <button onClick={handleClick} className={buttonClass} disabled={disabled}>
       <div className="inner-button">
-        <span className={buttonIconClass}>{icon}</span>
+        <img className={buttonIconClass} alt={iconAlt} src={icon} />
         <span className="button-label">{label}</span>
       </div>
     </button>

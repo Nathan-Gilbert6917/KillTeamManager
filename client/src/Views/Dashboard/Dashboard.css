@@ -25,6 +25,16 @@
   margin-right: 10px;
 }
 
+.user a {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
+.user a:visited {
+  color: var(--accent-color);
+  text-decoration: none;
+}
+
 @media only screen and (max-width: 600px) {
   .dashboard-container {
     grid-template-columns: auto;
